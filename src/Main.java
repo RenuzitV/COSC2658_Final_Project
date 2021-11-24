@@ -1,9 +1,12 @@
+import javafx.util.Pair;
+
 import java.io.File;
 import java.util.Scanner;
 
 public class Main {
     private static final char[][] maze = new char[25][25];
-    private static final int[][] dp = new int[25][25];
+    private static final Pair<Integer, Integer>[][] dp = new Pair[25][25];
+    private static final Pair<Integer, Integer>[][] parent = new Pair[25][25];
     private static int n, m;
     public static void read(String filename){
         File file = new File(filename);
@@ -20,35 +23,69 @@ public class Main {
         n = scanner.nextInt();
         m = scanner.nextInt();
         scanner.nextLine();
-        for (int i = 0; i <= n+1; ++i)
-            for (int j = 0; j <= m+1; ++j)
-                maze[i][j] = '0';
+
         for (int i = 1; i <= n; ++i){
             maze[i] = ("X" + scanner.nextLine() + "X").toCharArray();
         }
+        for (int i = 0; i <= n+1; ++i)
+            dp[i][0] = new Pair<>(-1, 0);
+        for (int i = 0; i <= m+1; ++i)
+            dp[0][i] = new Pair<>(-1, 0);
+
+
         for (int i = 1; i <= n; ++i){
             for (int j = 1; j <= m; ++j) {
-                System.out.printf("%c", maze[i][j]);
+                dp[i][j] = new Pair<>(-1, 0);
+//                System.out.printf("%c", maze[i][j]);
                 if (maze[i][j] == '.') maze[i][j] = '0';
             }
-            System.out.println();
+//            System.out.println();
         }
+        dp[1][1] = new Pair<>(0, 0);
     }
 
-    public static int solve(){
+    private static boolean greater(Pair<Integer, Integer> a, Pair<Integer, Integer> b){
+        return a.getKey() > b.getKey() || (a.getKey().equals(b.getKey()) && a.getValue() > b.getValue());
+    }
+
+    private static Pair<Integer, Integer> add(Pair<Integer, Integer> a, Pair<Integer, Integer> b){
+        return new Pair<>(a.getKey()+b.getKey(), a.getValue() + b.getValue());
+    }
+
+    public static String solve(){
+        Pair<Integer, Integer> v = new Pair<>(1, 1);
+        Pair<Integer, Integer> res = new Pair<>(0, 0);
         for (int i = 1; i <= n; ++i){
             for (int j = 1; j <= m; ++j){
                 if (maze[i][j] != 'X'){
-                    dp[i][j] = maze[i][j] - '0' + Math.max(dp[i - 1][j], dp[i][j-1]);
+                    Pair<Integer, Integer> temp = add(dp[i - 1][j], new Pair<>(maze[i][j] - '0', -1));
+                    if (maze[i-1][j] != 'X' && greater(temp, dp[i][j])) {
+                        dp[i][j] = temp;
+                        parent[i][j] = new Pair<>(i - 1, j);
+                    }
+                    temp = add(dp[i][j-1], new Pair<>(maze[i][j] - '0', -1));
+                    if (maze[i][j-1] != 'X' && greater(temp, dp[i][j])){
+                        dp[i][j] = temp;
+                        parent[i][j] = new Pair<>(i, j - 1);
+                    }
+                    if (greater(dp[i][j], res)){
+                        res = dp[i][j];
+                        v = new Pair<>(i, j);
+                    }
                 }
             }
         }
-        int res = 0;
-        for (int i = 1; i <= m; ++i)
-            res = Math.max(res, dp[n][i]);
-        for (int j = 1; j <= m; ++j)
-            res = Math.max(res, dp[j][m]);
-        return res;
+        StringBuilder ans = new StringBuilder(res.getKey() + " ");
+        StringBuilder temp = new StringBuilder();
+        while (v.getValue() > 1 || v.getKey() > 1){
+            Pair<Integer, Integer> u = parent[v.getKey()][v.getValue()];
+            if (u.getValue() < v.getValue()){
+                temp.append("R");
+            }
+            else temp.append("D");
+            v = u;
+        }
+        return ans.toString() + temp.reverse();
     }
 
     public static void main(String[] args) {
