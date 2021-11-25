@@ -30,9 +30,9 @@ public class Brute {
         }
 
     }
-    public static boolean dfs(int i, int j, int goldCollected) {
+    public static void dfs(int i, int j, int goldCollected) {
         if(i<0 || i>=n || j<0 || j>=m || maze[i][j] == 'X') {
-            return false;
+            return;
         }
         int currentCoin;
         if(maze[i][j] == '.')
@@ -41,10 +41,10 @@ public class Brute {
             currentCoin = maze[i][j] - '0';
         maze[i][j] = 'X';
         maxGold = Math.max(maxGold, goldCollected + currentCoin);
+
         dfs(i+1,j,goldCollected + currentCoin);
         dfs(i,j+1,goldCollected + currentCoin);
         maze[i][j] = (char) (currentCoin + '0');
-        return false;
     }
 
     public static int solve() {
