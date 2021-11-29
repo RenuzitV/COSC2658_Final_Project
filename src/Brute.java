@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Brute {
@@ -6,6 +7,7 @@ public class Brute {
     private static int n, m, maxGold = Integer.MIN_VALUE;
     private static int currentCoin = 0;
     private static String str = "";
+    private static int[][] cor = new int[50][50];
     public static void read(String filename) {
         File file = new File(filename);
         if (!file.exists()) {
@@ -39,6 +41,7 @@ public class Brute {
             currentCoin = 0;
         else
             currentCoin = maze[i][j] - '0';
+        //debug
         maze[i][j] = 'X';
         maxGold = Math.max(maxGold, goldCollected + currentCoin);
 
@@ -48,13 +51,7 @@ public class Brute {
     }
 
     public static int solve() {
-        for( int i = 0; i < n; i++) {
-            for( int j = 0; j < m; j++) {
-                if( maze[i][j] != 'X') {
-                    dfs(i,j,0);
-                }
-            }
-        }
+        dfs(0,0,0);
         return maxGold;
 
     }
