@@ -41,8 +41,8 @@ public class Brute {
             currentCoin = 0;
         else
             currentCoin = maze[i][j] - '0';
-        //debug
-        maze[i][j] = 'X';
+//        //debug
+//        maze[i][j] = 'X';
         maxGold = Math.max(maxGold, goldCollected + currentCoin);
 
         dfs(i+1,j,goldCollected + currentCoin);
