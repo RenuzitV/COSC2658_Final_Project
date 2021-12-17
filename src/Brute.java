@@ -50,8 +50,6 @@ public class Brute {
             currentCoin = 0;
         else
             currentCoin = maze[i][j] - '0';  // if gold then assign value (int) to current gold
-//        //debug
-//        maze[i][j] = 'X';
 
         // check if current collected golds is bigger than current maxGold
         // if true then update maxGold and finalPath
@@ -65,7 +63,6 @@ public class Brute {
         dfs(i+1,j,goldCollected + currentCoin, currentPath,"D");
         // go right, same row
         dfs(i,j+1,goldCollected + currentCoin, currentPath,"R");
-        maze[i][j] = (char) (currentCoin + '0'); // dòng này để chi z Tuấn Anh?
 
         // remove the last element in currentPath when return
         if (currentPath.length() > 0)
