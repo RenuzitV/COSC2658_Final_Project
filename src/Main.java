@@ -1,5 +1,4 @@
 import javafx.util.Pair;
-
 import java.io.File;
 import java.util.Scanner;
 
@@ -7,21 +6,26 @@ public class Main {
     private static final char[][] maze = new char[25][25];
     private static final Pair<Integer, Integer>[][] dp = new Pair[25][25];
     private static final Pair<Integer, Integer>[][] parent = new Pair[25][25];
-    private static int n, m;
+    private static int n, m; // n: rows; m: columns
+
+    // read maze from file
     public static void read(String filename){
         File file = new File(filename);
+        // check if file exists
         if (!file.exists()){
             return;
         }
+        // init scanner
         Scanner scanner = null;
         try {
             scanner = new Scanner(file);
         } catch (Exception e){
             System.out.println(e);
         }
-        assert scanner != null;
-        n = scanner.nextInt();
-        m = scanner.nextInt();
+
+        assert scanner != null; // assume scanner not null. if assumption not true, system will throw an error
+        n = scanner.nextInt(); // get the number of rows
+        m = scanner.nextInt(); // get the number of columns
         scanner.nextLine();
 
         for (int i = 1; i <= n; ++i){
@@ -85,6 +89,7 @@ public class Main {
             else temp.append("D");
             v = u;
         }
+        System.out.println(ans.toString() + " "+ temp.reverse());
         return ans.toString() + temp.reverse();
     }
 
