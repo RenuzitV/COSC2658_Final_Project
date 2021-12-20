@@ -15,13 +15,14 @@ public class Brute {
             return;
         }
         // init scanner
-        Scanner scanner = null;
+        Scanner scanner;
         try {
             scanner = new Scanner(file);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("cannot read file or does not exists");
+            return; //exit function if there is no file to be read
         }
-        assert scanner != null; // assume scanner not null. if assumption not true, system will throw an error
+
         n = scanner.nextInt(); // get the number of rows
         m = scanner.nextInt(); // get the number of columns
         maze = new char[n][m]; // create a matrix with n rows and m columns
@@ -36,14 +37,11 @@ public class Brute {
         }
     }
 
-    public static void dfs(int i, int j, int goldCollected, StringBuilder currentPath, String direction) {
+    public static void dfs(int i, int j, int goldCollected, StringBuilder currentPath) {
         // check if this position is valid to go to or not, if not then return
         if(i<0 || i>=n || j<0 || j>=m || maze[i][j] == 'X') {
             return;
         }
-
-        // if can go then update current path
-        currentPath.append(direction);
 
         int currentCoin; // to get the number of golds at this location
         if(maze[i][j] == '.') // if land then there's no gold
@@ -60,17 +58,18 @@ public class Brute {
         }
 
         // go down, same column
-        dfs(i+1,j,goldCollected + currentCoin, currentPath,"D");
-        // go right, same row
-        dfs(i,j+1,goldCollected + currentCoin, currentPath,"R");
+        currentPath.append("D");
+        dfs(i+1,j,goldCollected + currentCoin, currentPath);
+        currentPath.setLength(currentPath.length()-1); //remove previous append
 
-        // remove the last element in currentPath when return
-        if (currentPath.length() > 0)
-            currentPath.deleteCharAt(currentPath.length()-1);
+        // go right, same row
+        currentPath.append("R");
+        dfs(i,j+1,goldCollected + currentCoin, currentPath);
+        currentPath.setLength(currentPath.length()-1); //remove previous append
     }
 
     public static int solve() {
-        dfs(0,0,0, new StringBuilder(),"");
+        dfs(0,0,0, new StringBuilder());
         return maxGold;
     }
 
