@@ -31,11 +31,10 @@ public class Main {
         scanner.nextLine(); //remove \n character
 
         for (int i = 1; i <= n; ++i){
-            maze[i] = (" " + scanner.nextLine() + " ").toCharArray(); //read maze in, and offsets the maze by to start at (1, 1) and ends at (n, m)
+            maze[i] = (" " + scanner.nextLine() + " ").toCharArray(); //read maze in, and offsets the maze to start at (1, 1) and ends at (n, m)
         }
 
         //initialize dynamic programming matrix
-        //we want the bounds to be (-1, 0) so the program does not seek solution from outside of the box
         for (int i = 0; i <= n+1; ++i){
             for (int j = 0; j <= m+1; ++j) {
                 dp[i][j] = new Pair<>(-500, 0); //anything that is not the root is initially unreachable, and therefore has -500 weighting
