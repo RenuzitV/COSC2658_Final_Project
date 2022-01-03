@@ -11,11 +11,11 @@ public class Main {
     private static int n, m; // n: rows; m: columns
 
     // read maze from file
-    public static void read(String filename){
+    public static boolean read(String filename){
         File file = new File(filename);
         // check if file exists
         if (!file.exists()){
-            return;
+            return false;
         }
         // init scanner
         Scanner scanner;
@@ -23,7 +23,7 @@ public class Main {
             scanner = new Scanner(file);
         } catch (Exception e){
             System.out.println("Error : cannot read file/file does not exists");
-            return; //exit function if there is no file to be read
+            return false; //exit function if there is no file to be read
         }
 
         try {
@@ -32,7 +32,7 @@ public class Main {
             scanner.nextLine(); //remove \n character
         } catch (Exception e){
             System.out.println("Error : cannot read number of rows or columns");
-            return;
+            return false;
         }
 
         for (int i = 1; i <= n; ++i) {
@@ -42,15 +42,23 @@ public class Main {
                 s = scanner.nextLine().split("\\s+");
             } catch (Exception e){
                 System.out.println("Error : cannot read line " + i);
-                return;
+                return false;
             }
             if (s.length != m) {
                 System.out.println("Error : line " + i + " does not have " + m + " elements seperated by spaces.");
-                return;
+                return false;
             }
             for (int j = 1; j <= m; ++j){
-                if (s[j-1].equals(".")) maze[i][j] = "0";
-                else maze[i][j] = s[j-1]; //initialize '.' as '0' for convenience
+                if (s[j-1].equals(".")) maze[i][j] = "0"; //initialize '.' as '0' for convenience
+                else {
+                    try{
+                        Integer.valueOf(s[j-1]);
+                    } catch(Exception e){
+                        System.out.println("Error : element at (" + i + ", " + j + ") is not an integer");
+                        return false;
+                    }
+                    maze[i][j] = s[j-1];
+                }
             }
         }
 
@@ -65,6 +73,8 @@ public class Main {
         //be traversed from (1, 1)) is always worse than if we did not move at all.
         //the most we can get from such an answer is to move 25 moves down and 24 moves right, with 9 points each move, which is 449, and we round it up to 500 for simplicity.
         dp[1][1] = new Pair<>(0, 0); //set root as our only reachable node
+        
+        return true;
     }
 
     //function to see if this pair of result is better than another
@@ -127,7 +137,7 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length != 1) return;
-        read(args[0]);
+        if (!read(args[0])) return;
         solve();
     }
 }
