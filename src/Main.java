@@ -1,7 +1,5 @@
 import javafx.util.Pair;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -24,7 +22,7 @@ public class Main {
         try {
             scanner = new Scanner(file);
         } catch (Exception e){
-            System.out.println("file not found or cannot be read");
+            System.out.println("Error : cannot read file/file does not exists");
             return; //exit function if there is no file to be read
         }
 
