@@ -76,7 +76,7 @@ public class Main {
         //be traversed from (1, 1)) is always worse than if we did not move at all.
         //the most we can get from such an answer is to move 25 moves down and 24 moves right, with 9 points each move, which is 449, and we round it up to 500 for simplicity.
         dp[1][1] = new Pair<>(0, 0); //set root as our only reachable node
-        
+
         return true;
     }
 
@@ -135,7 +135,9 @@ public class Main {
             v = u; //set current coordinate to its parent, and repeat
         }
         //print result and path
-        System.out.println(res.getKey() + " " + temp.reverse());
+        System.out.println("Steps = " + temp.length() +
+                " Gold = " + res.getKey() +
+                " Path = " + temp.reverse());
     }
 
     public static void main(String[] args) {
