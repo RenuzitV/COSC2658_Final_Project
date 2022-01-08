@@ -77,7 +77,7 @@ public class Main {
         //the most we can get from such an answer is to move 27 moves down and 27 moves right, but we do not know how much weighting each node has,
         // we'll assume the sum of them do not exceed 2^31-1.
         dp[1][1] = new Pair<>(0, 0); //set root as our only reachable node
-        
+
         return true;
     }
 
@@ -136,7 +136,9 @@ public class Main {
             v = u; //set current coordinate to its parent, and repeat
         }
         //print result and path
-        System.out.println(res.getKey() + " " + temp.reverse());
+        System.out.println("Steps = " + temp.length() +
+                " Gold = " + res.getKey() +
+                " Path = " + temp.reverse());
     }
 
     public static void main(String[] args) {
