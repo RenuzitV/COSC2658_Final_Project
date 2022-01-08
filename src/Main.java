@@ -3,11 +3,11 @@ import java.io.File;
 import java.util.Scanner;
 
 public class Main {
-    private static final String[][] maze = new String[25][25];
+    private static final String[][] maze = new String[30][30];
     //a pair consists of a key (coin collected) and a value (length of path)
-    private static final Pair<Integer, Integer>[][] dp = new Pair[25][25];
+    private static final Pair<Integer, Integer>[][] dp = new Pair[30][30];
     //this pair contains the parent location that leads to this location being the most optimal path
-    private static final Pair<Integer, Integer>[][] parent = new Pair[25][25];
+    private static final Pair<Integer, Integer>[][] parent = new Pair[30][30];
     private static int n, m; // n: rows; m: columns
 
     // read maze from file
@@ -68,13 +68,14 @@ public class Main {
         //initialize dynamic programming matrix
         for (int i = 0; i <= n+1; ++i){
             for (int j = 0; j <= m+1; ++j) {
-                dp[i][j] = new Pair<>(-500, 0); //anything that is not the root is initially unreachable, and therefore has -500 weighting
+                dp[i][j] = new Pair<>(-Integer.MAX_VALUE, 0); //anything that is not the root is initially unreachable, and therefore has -MAX weighting
             }
         }
 
-        //the idea of -500 is to make sure whatever optimal answer we can get from "unreachable nodes" (nodes that cannot
+        //the idea of -MAX is to make sure whatever optimal answer we can get from "unreachable nodes" (nodes that cannot
         //be traversed from (1, 1)) is always worse than if we did not move at all.
-        //the most we can get from such an answer is to move 25 moves down and 24 moves right, with 9 points each move, which is 449, and we round it up to 500 for simplicity.
+        //the most we can get from such an answer is to move 27 moves down and 27 moves right, but we do not know how much weighting each node has,
+        // we'll assume the sum of them do not exceed 2^31-1.
         dp[1][1] = new Pair<>(0, 0); //set root as our only reachable node
         
         return true;
@@ -140,7 +141,10 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length != 1) return;
-        if (!read(args[0])) return;
+        if (!read(args[0])) {
+            System.out.println("Error in input file, exiting..");
+            return;
+        }
         solve();
     }
 }
