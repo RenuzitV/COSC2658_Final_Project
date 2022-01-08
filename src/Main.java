@@ -66,16 +66,11 @@ public class Main {
         }
 
         //initialize dynamic programming matrix
-        for (int i = 0; i <= n+1; ++i){
-            for (int j = 0; j <= m+1; ++j) {
-                dp[i][j] = new Pair<>(-Integer.MAX_VALUE, 0); //anything that is not the root is initially unreachable, and therefore has -MAX weighting
+        for (int i = 0; i <= n+1; ++i) {
+            for (int j = 0; j <= m + 1; ++j) {
+                dp[i][j] = new Pair<>(-1, 0); //anything that is not the root is initially unreachable, and therefore has -1 weighting
             }
         }
-
-        //the idea of -MAX is to make sure whatever optimal answer we can get from "unreachable nodes" (nodes that cannot
-        //be traversed from (1, 1)) is always worse than if we did not move at all.
-        //the most we can get from such an answer is to move 27 moves down and 27 moves right, but we do not know how much weighting each node has,
-        // we'll assume the sum of them do not exceed 2^31-1.
         dp[1][1] = new Pair<>(0, 0); //set root as our only reachable node
 
         return true;
@@ -101,19 +96,26 @@ public class Main {
             for (int j = 1; j <= m; ++j){
                 //if the current node is not 'X'
                 if (!maze[i][j].equals("X")){
-                    //make a pair of (coins, length of path for this node)
-                    Pair<Integer, Integer> temp = add(dp[i - 1][j], new Pair<>(Integer.valueOf(maze[i][j]), 1));
-                    //if the result at this node is either reachable i.e. (0, 0) vs (-1, 0) or just better i.e. (12, 4) vs (15,6) then we update the current node
-                    if (better(temp, dp[i][j])) {
-                        dp[i][j] = temp; //update result
-                        parent[i][j] = new Pair<>(i - 1, j); //update parent node
+                    //any prior node that we try to connect from must have a non-negative weighting,
+                    //meaning we have access from the original node to it
+                    if (dp[i-1][j].getKey() >= 0) {
+                        //make a pair of (coins, length of path for this node)
+                        Pair<Integer, Integer> temp = add(dp[i - 1][j], new Pair<>(Integer.valueOf(maze[i][j]), 1));
+                        //if the result at this node is either reachable i.e. (0, 0) vs (-1, 0) or just better i.e. (12, 4) vs (15,6) then we update the current node
+                        if (better(temp, dp[i][j])) {
+                            dp[i][j] = temp; //update result
+                            parent[i][j] = new Pair<>(i - 1, j); //update parent node
+                        }
                     }
 
                     //same thing as above, but from the left
-                    temp = add(dp[i][j-1], new Pair<>(Integer.valueOf(maze[i][j]), 1));
-                    if (better(temp, dp[i][j])){
-                        dp[i][j] = temp;
-                        parent[i][j] = new Pair<>(i, j - 1);
+                    if (dp[i][j-1].getKey() >= 0) {
+                        //make a pair of (coins, length of path for this node)
+                        Pair<Integer, Integer> temp = add(dp[i][j - 1], new Pair<>(Integer.valueOf(maze[i][j]), 1));
+                        if (better(temp, dp[i][j])) {
+                            dp[i][j] = temp;
+                            parent[i][j] = new Pair<>(i, j - 1);
+                        }
                     }
 
                     //if current result is the best so far, update both v and res.
